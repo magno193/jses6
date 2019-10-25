@@ -24,9 +24,37 @@ class App {
             html_url= 'http://github.com/rocketseat/'
         });
 
-        console.log(this.repositories);
-        
+        this.render();
     }
+
+    //apaga todo o conteudo da lista e renderiza do zero
+    render(){
+        this.listElement.innerHTML = ''; // apaga
+        // para percorrer no array e realizar
+        // operacoes para adicionar os itens em index
+        this.repositories.forEach(repo => {
+ 
+            let imagemElement = document.createElement('img')
+            imagemElement.setAttribute('src', repo.avatar_url);
+ 
+            let titleElement = document.createElement('strong');
+            titleElement.appendChild(document.createTextNode(repo.name));
+ 
+            let descriptionElement = document.createElement('p');
+            descriptionElement.appendChild(document.createTextNode(repo.description));
+                
+            let linkElement = document.createElement('a');
+            linkElement.setAttribute('target', '_blank');
+            linkElement.appendChild(document.createTextNode('Acessar'));
+ 
+            let listItemElement = document.createElement('li');
+            listItemElement.appendChild(imagemElement);
+            listItemElement.appendChild(titleElement);
+            listItemElement.appendChild(descriptionElement);
+            listItemElement.appendChild(linkElement);
+        })
+    }
+
 }
 // Para executar a classe
 new App();
