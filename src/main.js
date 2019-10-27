@@ -20,20 +20,22 @@ class App {
     }
 
     async addRepository(event){
-        // não deixa o form com o funcionamento padrão
+        // Não deixa o form com o funcionamento padrão
         event.preventDefault();
-        // 
+        // Pega o valor do input
         const repoInput = this.inputElement.value;
 
         if (repoInput.length === 0)
             return;
 
+        // Utilização do axios para requisitar o acesso a página
+        // de repositório do api.github
         const response = await api.get(`/repos/${repoInput}`);
 
         // Dados encontrados em response
         const { name, description, html_url, owner: {avatar_url} } = response.data;
 
-        // adiciona um novo repositório no array
+        // Adiciona um novo repositório no array
         this.repositories.push({
             name,
             description,
@@ -41,6 +43,7 @@ class App {
             html_url
         });
 
+        // Zera o valor do input
         this.inputElement.value = '';
 
         this.render();
@@ -49,6 +52,7 @@ class App {
     //apaga todo o conteudo da lista e renderiza do zero
     render(){
         this.listElement.innerHTML = ''; // apaga
+        
         // para percorrer no array e realizar
         // operacoes para adicionar os itens em index
         this.repositories.forEach(repo => {
