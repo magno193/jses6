@@ -5,7 +5,9 @@ class App {
         this.repositories = [];
 
         this.formElement = document.getElementById('repo-form');
+        this.listElement = document.getElementById('repo-list');
         this.inputElement = document.querySelector('input[name=repository]')
+
         this.registerHandlers();
     }
 
@@ -18,16 +20,15 @@ class App {
         // não deixa o form com o funcionamento padrão
         event.preventDefault();
 
-        // Pega o valor do input
         const repoInput = this.inputElement.value;
-        // Checar se não existe input, pare o método
-        if (repoInput.length === 0) 
-            return;
 
-        const response = await api.get(`http://github.com/${repoInput}`);
+        if (repoInput.length === 0){return;}
+
+        const response = await api.get(`/repos/${repoInput}`);
 
         console.log(response);
         
+
         // adiciona um novo repositório no array
         this.repositories.push({
             name:'rocketseat.com.br',
@@ -35,10 +36,9 @@ class App {
             avatar_url: 'https://avatars0.githubusercontent.com/u/28929274?v=4',
             html_url: 'http://github.com/rocketseat/'
         });
-
         this.render();
     }
-
+    
     //apaga todo o conteudo da lista e renderiza do zero
     render(){
         this.listElement.innerHTML = ''; // apaga
