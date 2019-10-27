@@ -2,40 +2,47 @@ import api from './api';
 
 class App {
     constructor() {
+        // Constroi o array repositories
         this.repositories = [];
 
+        // Constroi os elementos pegos em index.html
         this.formElement = document.getElementById('repo-form');
         this.listElement = document.getElementById('repo-list');
         this.inputElement = document.querySelector('input[name=repository]')
 
+        // Chama o método que registra eventos do usuário
         this.registerHandlers();
     }
 
+    // Registra os eventos do usuário
     registerHandlers(){
-        // registra os eventos do usuário
         this.formElement.onsubmit = event => this.addRepository(event);
     }
 
     async addRepository(event){
         // não deixa o form com o funcionamento padrão
         event.preventDefault();
-
+        // 
         const repoInput = this.inputElement.value;
 
-        if (repoInput.length === 0){return;}
+        if (repoInput.length === 0)
+            return;
 
         const response = await api.get(`/repos/${repoInput}`);
 
-        console.log(response);
-        
+        // Dados encontrados em response
+        const { name, description, html_url, owner: {avatar_url} } = response.data;
 
         // adiciona um novo repositório no array
         this.repositories.push({
-            name:'rocketseat.com.br',
-            description: 'Tire a sua idéia do papel e dê vida à sua startup.',
-            avatar_url: 'https://avatars0.githubusercontent.com/u/28929274?v=4',
-            html_url: 'http://github.com/rocketseat/'
+            name,
+            description,
+            avatar_url,
+            html_url
         });
+
+        this.inputElement.value = '';
+
         this.render();
     }
     
@@ -57,6 +64,7 @@ class App {
                 
             let linkElement = document.createElement('a');
             linkElement.setAttribute('target', '_blank');
+            linkElement.setAttribute('href', repo.html_url);
             linkElement.appendChild(document.createTextNode('Acessar'));
  
             let listItemElement = document.createElement('li');
@@ -64,6 +72,8 @@ class App {
             listItemElement.appendChild(titleElement);
             listItemElement.appendChild(descriptionElement);
             listItemElement.appendChild(linkElement);
+
+            this.listElement.appendChild(listItemElement);
         })
     }
 
