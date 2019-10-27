@@ -13,7 +13,7 @@ class App {
         this.formElement.onsubmit = event => this.addRepository(event);
     }
 
-    addRepository(){
+    addRepository(event){
         // não deixa o form com o funcionamento padrão
         event.preventDefault();
 
