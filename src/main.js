@@ -8,7 +8,7 @@ class App {
         // Constroi os elementos pegos em index.html
         this.formElement = document.getElementById('repo-form');
         this.listElement = document.getElementById('repo-list');
-        this.inputElement = document.querySelector('input[name=repository]')
+        this.inputElement = document.querySelector('input[name=repository]');
 
         // Chama o método que registra eventos do usuário
         this.registerHandlers();
@@ -17,6 +17,19 @@ class App {
     // Registra os eventos do usuário
     registerHandlers(){
         this.formElement.onsubmit = event => this.addRepository(event);
+    }
+
+    setLoading(loading = true){
+        if (loading === true) {
+            let loadingElement = document.createElement('span');
+            let text = document.createTextNode('Carregando..');
+            loadingElement.appendChild(text);
+            loadingElement.setAttribute('id', 'loading')
+
+            this.formElement.appendChild(loadingElement)
+        } else {
+            document.getElementById('loading').remove();
+        }
     }
 
     async addRepository(event){
@@ -28,31 +41,39 @@ class App {
         if (repoInput.length === 0)
             return;
 
+        this.setLoading();
+
         // Utilização do axios para requisitar o acesso a página
         // de repositório do api.github
-        const response = await api.get(`/repos/${repoInput}`);
+        try{
+            const response = await api.get(`/repos/${repoInput}`);
 
-        // Dados encontrados em response
-        const { name, description, html_url, owner: {avatar_url} } = response.data;
+            // Dados encontrados em response
+            const { name, description, html_url, owner: {avatar_url} } = response.data;
 
-        // Adiciona um novo repositório no array
-        this.repositories.push({
-            name,
-            description,
-            avatar_url,
-            html_url
-        });
+            // Adiciona um novo repositório no array
+            this.repositories.push({
+                name,
+                description,
+                avatar_url,
+                html_url
+            });
 
+            this.render();
+
+        } catch {
+            alert('O repositório não existe!');
+        }
+
+        this.setLoading(false);
         // Zera o valor do input
         this.inputElement.value = '';
-
-        this.render();
     }
     
     //apaga todo o conteudo da lista e renderiza do zero
     render(){
         this.listElement.innerHTML = ''; // apaga
-        
+
         // para percorrer no array e realizar
         // operacoes para adicionar os itens em index
         this.repositories.forEach(repo => {
